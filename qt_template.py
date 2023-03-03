@@ -8,6 +8,10 @@ from PyQt6 import QtCore as qtc
 class MainWindow(qtw.QMainWindow):
     def __init__(self):
         super().__init__()
+        self.main_widget = qtw.QWidget()
+        # self.main_layout = qtw.Q BoxLayout()
+        # self.main_widget.setLayout(self.main_layout)
+        self.setCentralWidget(self.main_widget)
 
 
 
