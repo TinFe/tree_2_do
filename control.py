@@ -10,6 +10,8 @@ class Tree:
     def add_item(self, parent_id, item_name, item_id):
         tree = ET.parse(self.filename)
         root = tree.getroot()
+
+        # if adding directly to root:
         if parent_id == '0':
             item = ET.SubElement(root, 'item', {'id': f'{item_id}'})
             item.text = item_name
@@ -20,12 +22,20 @@ class Tree:
         tree = ET.ElementTree(root)
         tree.write(filename)
 
+    def get_element_by_id(self,id):
+        tree = ET.parse(self.filename)
+        root = tree.getroot()
+        selected_element = root.find(f"./*[@id='{id}']")
+        return selected_element
+    
     def read_file(self):
         pass
 
 
-
-
+tree = Tree('programming')
+tree.add_item('0','research','1.0')
+tree.add_item('0','projects','1.1')
+tree.add_item('0','networking','1.2')
 
 
 
