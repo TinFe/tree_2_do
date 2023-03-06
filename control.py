@@ -7,14 +7,23 @@ class Tree:
         self.filename = filename
         self.save_to_file(self.root)
 
-    def add_item(self, parent_id, item_name, item_id):
+    def add_item(self, parent_id, item_name):
         tree = ET.parse(self.filename)
         root = tree.getroot()
-
-        # if adding directly to root:
+        
+        # if adding to root:
         if parent_id == '0':
-            item = ET.SubElement(root, 'item', {'id': f'{item_id}'})
-            item.text = item_name
+            # get siblings
+            siblings = []
+            for e in root.iter():
+                if len(self.parse_id(e.attrib['id'])) == 2:
+                    siblings.append(self.parse_id(e.attrib['id'])[-1])
+            if len(siblings) == 0:
+                item_id = '1.0'
+            else:
+                item_id = '1.' + str(max(siblings)+1)
+            item = ET.SubElement(root, 'item', {'id':item_id})
+        item.text = item_name
         self.save_to_file(root)
     
     def save_to_file(self, root):
@@ -28,14 +37,18 @@ class Tree:
         selected_element = root.find(f"./*[@id='{id}']")
         return selected_element
     
-    def read_file(self):
-        pass
+    def parse_id(self, id):
+        id_list = id.split('.')
+        for i in enumerate(id_list):
+            id_list[i[0]] = int(i[1])
+        return id_list
+        
 
 
 tree = Tree('programming')
-tree.add_item('0','research','1.0')
-tree.add_item('0','projects','1.1')
-tree.add_item('0','networking','1.2')
+tree.add_item('0','research\n')
+tree.add_item('0','projects\n')
+tree.add_item('0','networking\n')
 
 
 
