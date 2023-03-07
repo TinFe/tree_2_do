@@ -47,7 +47,7 @@ class Tree:
 
 tree = Tree('programming')
 tree.add_item('0','research\n')
-tree.add_item('0','projects\n')
+
 tree.add_item('0','networking\n')
 
 
