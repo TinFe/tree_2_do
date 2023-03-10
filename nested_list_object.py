@@ -17,7 +17,7 @@ class ListTree:
 
         else:
             insert_path = self.convert_path(parent_path,'set')
-            count_children = len(self.get_item(self.root, parent_path)[self.into])
+            count_children = len(self.get_item(parent_path)[self.into])
             new_item_path = parent_path
             new_item_path.append(count_children)
 
@@ -46,7 +46,7 @@ class ListTree:
             self.set_item(lst[path[depth]], path, item, depth+1)
             return lst
         
-    def get_item(self, lst, path):
+    def get_item(self, path):
         # convert path 
         converted_path = self.convert_path(path, 'get')
 
@@ -56,7 +56,7 @@ class ListTree:
             else:
                 return recursive_get(lst[path[depth]], path, depth+1)
         
-        return recursive_get(lst, converted_path)
+        return recursive_get(self.root, converted_path)
                 
 
 # test add_item
