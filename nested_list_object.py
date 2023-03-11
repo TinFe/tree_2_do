@@ -7,6 +7,7 @@ class ListTree:
         for i in enumerate(self.root):
             if i[1] == []:
                 self.into = i[0]
+        self.table = {}
 
     def add_item(self, parent_path, item_name):
         if parent_path == 'root':
@@ -57,8 +58,20 @@ class ListTree:
                 return recursive_get(lst[path[depth]], path, depth+1)
         
         return recursive_get(self.root, converted_path)
-                
+    
+    def convert_path_to_rank(self,path:list):
+        for i in enumerate(path):
+            path[i[0]] += 1
+        
+        rank = 0
+        
+        for i in enumerate(path):
+            scale_factor = 1 / (1000 ** i[0])
+            rank += i[1] * scale_factor
+            
+        return rank
 
+        
 # test add_item
 tree = ListTree('programming')
 print(tree.root)
