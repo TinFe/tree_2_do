@@ -1,13 +1,14 @@
 class ListTree:
     def __init__(self, root_name) -> None:
         self.root_name = root_name
-        self.root = ['root','programming',[]]
+        self.root = ['root',root_name,[]]
         # all items have identical structure to self.root. all items will be inserted into the empty list. Therefore,
         # we need the index of the empty list, as this will be used for inserting other items
         for i in enumerate(self.root):
             if i[1] == []:
                 self.into = i[0]
-        self.table = {}
+                
+        self.table = {'root': ['root', root_name]}
 
     def add_item(self, parent_path, item_name):
         if parent_path == 'root':
@@ -59,17 +60,7 @@ class ListTree:
         
         return recursive_get(self.root, converted_path)
     
-    def convert_path_to_rank(self,path:list):
-        for i in enumerate(path):
-            path[i[0]] += 1
-        
-        rank = 0
-        
-        for i in enumerate(path):
-            scale_factor = 1 / (1000 ** i[0])
-            rank += i[1] * scale_factor
-            
-        return rank
+    
 
         
 # test add_item
