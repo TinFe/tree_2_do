@@ -8,7 +8,6 @@ class ListTree:
             if i[1] == []:
                 self.into = i[0]
                 
-        self.table = {'root': ['root', root_name]}
 
     def add_item(self, parent_path, item_name):
         if parent_path == 'root':
@@ -60,10 +59,27 @@ class ListTree:
         
         return recursive_get(self.root, converted_path)
     
-    
+    def show(self):
+        print(self.root_name)
+        def print_strings(tree):
+            for item in enumerate(tree):
+                if isinstance(item[1], str):
+                    depth = len(tree[item[0]-1])
+                    print(('   ' * depth) + '•' + item[1])
+                elif isinstance(item[1], list):
+                    print_strings(item[1])
+                    
+        print_strings(self.root[2])
 
         
 # test add_item
 tree = ListTree('programming')
 print(tree.root)
 tree.add_item('root','research')
+tree.add_item([0],'read')
+tree.add_item('root','projects')
+tree.add_item('root', 'networking')
+tree.add_item([1],'tree to do')
+
+['root', 'programming', [[[0], 'research', [[[0, 0], 'read', []]]]]]
+[[0], 'research', [[[0, 0], 'read', []]]]
