@@ -33,9 +33,11 @@ class ListTree:
 
         if set_or_get == 'set':
             return new_path
+        
         elif set_or_get == 'get':
             new_path.pop()
             return new_path
+        
         else:
             return "INVALID ARGUMENT IN .convert_path(): set_or_get MUST EQUAL 'set' OR 'get'.\n"
     
@@ -61,15 +63,15 @@ class ListTree:
     
     def show(self):
         print(self.root_name)
-        def print_strings(tree):
+        def recurs_print_items(tree):
             for item in enumerate(tree):
                 if isinstance(item[1], str):
                     depth = len(tree[item[0]-1])
                     print(('   ' * depth) + '•' + item[1])
                 elif isinstance(item[1], list):
-                    print_strings(item[1])
+                    recurs_print_items(item[1])
                     
-        print_strings(self.root[2])
+        recurs_print_items(self.root[2])
 
         
 # test add_item
