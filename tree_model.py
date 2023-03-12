@@ -44,9 +44,17 @@ class ListTree:
         self.select(parent_address).append(new_item)
     
     def rm(self, item_path):
-        parent_path = item_path.copy()
-        parent_path.pop()
-        print(self.select(parent_path))
+        parent_address = item_path.copy()
+        parent_address.pop()
+        position = item_path[-1]
+        # remove node from the tree
+        self.select(parent_address).pop(position)
+        # rewrite correct adddresses for each remaining item
+        rank = 0
+        for i in self.select(parent_address):
+            i[0][-1] = rank
+            rank += 1
+        self.sort_items(parent_address)
         
     def reposition_item(self, item_address, new_rank):
         current_rank = item_address[-1]
@@ -67,7 +75,6 @@ class ListTree:
         # swap addresses
         self.select(parent_address)[current_rank][0][-1] = new_rank
         self.select(parent_address)[new_rank][0][-1] = current_rank
-        
         self.sort_items(parent_address)
         
         # sort items now that address information of target items has been changed
@@ -113,4 +120,9 @@ tree.insert_item([1,0], 'add detach_and_retach')
 tree.show()
 tree.reposition_item([1,0,1],0)
 tree.show()
+tree.insert_item([1], 'testing 123')
+tree.insert_item([1], '123')
+tree.insert_item([1],'hello again')
+tree.insert_item([1,2],' a child')
 tree.rm([1,0])
+tree.show()
