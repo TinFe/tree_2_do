@@ -13,14 +13,14 @@ class ListTree:
         if parent_path == 'root':
             insert_path = [self.into]
             # count direct root children
-            count_children = len(self.root[self.into])
-            new_item_path = [count_children]
+            sibling_count = len(self.root[self.into])
+            new_item_path = [sibling_count]
 
         else:
             insert_path = self.convert_path(parent_path,'set')
-            count_children = len(self.get_item(parent_path)[self.into])
+            sibling_count = len(self.get_item(parent_path)[self.into])
             new_item_path = parent_path
-            new_item_path.append(count_children)
+            new_item_path.append(sibling_count)
 
         item = [new_item_path, item_name, []]
         self.root = self.set_item(self.root, insert_path, item)
@@ -61,6 +61,36 @@ class ListTree:
         
         return recursive_get(self.root, converted_path)
     
+    def reorder_item(self, item_path, new_rank):
+        # get parent path
+        current_rank = item_path[-1]
+        parent_path = item_path
+        parent_path.pop()
+        # count children
+        if len(parent_path) == 0:
+            sibling_count = len(self.root[self.into])
+            self.root[self.into][new_rank][0][-1] = current_rank
+            self.root[self.into][current_rank][0][-1] = new_rank 
+            sorted_items = sorted(self.root[self.into], key = lambda x:x[0][-1])
+            for i in range(len(sorted_items)):
+                self.root[self.into][i] = sorted_items[i]
+        else:
+            sibling_count = len(self.get_item(parent_path)[self.into])
+        if current_rank == new_rank and len(parent_path != 0):
+            return "new_rank CANNOT EQUAL CURRENT RANK"
+        elif new_rank != (sibling_count - 1) and len(parent_path) != 0:
+            self.get_item(parent_path)[self.into][new_rank][0][-1] = current_rank
+            self.get_item(parent_path)[self.into][current_rank][0][-1] = new_rank 
+            sorted_items = sorted(self.get_item(parent_path)[self.into], key = lambda x:x[0][-1])
+            for i in range(len(sorted_items)):
+                self.get_item(parent_path)[self.into][i] = sorted_items[i]
+                
+                
+            
+                
+                
+                
+            
     def show(self):
         print(self.root_name)
         def recurs_print_items(tree):
@@ -82,6 +112,18 @@ tree.add_item([0],'read')
 tree.add_item('root','projects')
 tree.add_item('root', 'networking')
 tree.add_item([1],'tree to do')
+tree.add_item([1,0],'add reorder feature')
+tree.add_item([1,0],'make reorder children function')
+tree.add_item([1,0],'make count_children reusable')
+tree.add_item([1,0], 'make show() display paths')
+tree.show()
+print(tree.root)
+tree.reorder_item([1,0,0],2)
+
+
+
 
 ['root', 'programming', [[[0], 'research', [[[0, 0], 'read', []]]]]]
 [[0], 'research', [[[0, 0], 'read', []]]]
+
+[[1, 0, 2], 'add reorder feature', []], [[1, 0, 1], 'make reorder children function', []], [[1, 0, 0], 'make count_children reusable', []], [[1, 0, 3], 'make show() display paths', []]
