@@ -76,7 +76,7 @@ class ListTree:
         for i in range(len(sorted_items)):
             self.select(parent_address)[i] = sorted_items[i]
         for i in self.select(parent_address):
-            self.relabel_children(i)
+            self.relabel_children(i[0])
         
     def relabel_children(self, parent_address):
         # relabel a parent's children after its own address has been changed.
