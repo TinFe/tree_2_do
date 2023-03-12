@@ -67,6 +67,20 @@ class ListTree:
         sorted_items = sorted(self.select(parent_address), key=lambda x:x[0][-1])
         for i in range(len(sorted_items)):
             self.select(parent_address)[i] = sorted_items[i]
+        for i in self.select(parent_address):
+            self.relabel_children(i[0])
+        
+    def relabel_children(self, parent_address):
+        # relabel a parent's children after its own address has been changed.
+        def relabel_recurs(item, parent_address_recurs):
+            for element in item:
+                if isinstance(element, str):
+                    item[0][0:len(parent_address_recurs)] = parent_address
+                elif isinstance(element, list):
+                    relabel_recurs(element, parent_address_recurs)
+        item = self.select(parent_address)
+        relabel_recurs(item, parent_address)
+                     
         
     def show(self):
         print('**'+self.root_name+'**')
@@ -85,6 +99,7 @@ class ListTree:
 tree = ListTree('programming')
 tree.root = root
 tree.insert_item([1,0], 'finish refactor')
+tree.insert_item([1,0,0], 'some shit')
 tree.insert_item([1,0], 'add reorder function')
 tree.insert_item([1,0], 'add detach_and_retach')
 tree.show()
