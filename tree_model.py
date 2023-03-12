@@ -67,9 +67,6 @@ class ListTree:
         sorted_items = sorted(self.select(parent_address), key=lambda x:x[0][-1])
         for i in range(len(sorted_items)):
             self.select(parent_address)[i] = sorted_items[i]
-            
-        
-        
         
     def show(self):
         print('**'+self.root_name+'**')
