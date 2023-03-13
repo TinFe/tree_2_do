@@ -43,18 +43,31 @@ class ListTree:
         new_item = [new_address, new_item_name, []]
         self.select(parent_address).append(new_item)
     
+    def insert_node(self, node, new_parent_address, new_rank=0):
+        siblings_count = self.count_children(new_parent_address)
+        if new_rank > siblings_count or new_rank < 0:
+            return 'INVALID NEW RANK'
+        # first insert node as the last child of its parent, later we will sort it again
+        temporary_rank = siblings_count
+        node_address = new_parent_address.copy()
+        node_address.append(temporary_rank)
+        node[0] = node_address
+        self.select(new_parent_address).append(node)
+        self.relabel_children(node_address)
+        
     def rm(self, item_path):
         parent_address = item_path.copy()
         parent_address.pop()
         position = item_path[-1]
         # remove node from the tree
-        self.select(parent_address).pop(position)
+        detached_node = self.select(parent_address).pop(position)
         # rewrite correct adddresses for each remaining item
         rank = 0
         for i in self.select(parent_address):
             i[0][-1] = rank
             rank += 1
         self.sort_items(parent_address)
+        return detached_node
         
     def reposition_item(self, item_address, new_rank):
         current_rank = item_address[-1]
@@ -71,11 +84,19 @@ class ListTree:
         
         if new_rank > item_sibling_count or new_rank < 0:
             return "NEW RANK OUTSIDE VALID RANGE"
-        
-        # swap addresses
+        # re rank all siblings
         self.select(parent_address)[current_rank][0][-1] = new_rank
-        self.select(parent_address)[new_rank][0][-1] = current_rank
+        for i in range(new_rank, current_rank):
+            self.select(parent_address)[i][0][-1] += 1
+        
+        print(self.select(parent_address))
+        
         self.sort_items(parent_address)
+        
+    def reparent(self, node_address, new_parent_address):
+        node = self.rm(node_address)
+        self.insert_node(node, new_parent_address)
+        
         
         # sort items now that address information of target items has been changed
     def sort_items(self, parent_address):
@@ -90,9 +111,14 @@ class ListTree:
         def relabel_recurs(item, parent_address_recurs):
             for element in item:
                 if isinstance(element, str):
+                    # normal case, the parent address has changed, but its length has not changed
                     item[0][0:len(parent_address_recurs)] = parent_address
+                    # parent address has increased, 
+                    
+                    
                 elif isinstance(element, list):
                     relabel_recurs(element, parent_address_recurs)
+        
         item = self.select(parent_address)
         relabel_recurs(item, parent_address)
                      
@@ -117,12 +143,10 @@ tree.insert_item([1,0], 'finish refactor')
 tree.insert_item([1,0,0], 'some shit')
 tree.insert_item([1,0], 'add reorder function')
 tree.insert_item([1,0], 'add detach_and_retach')
-tree.show()
-tree.reposition_item([1,0,1],0)
-tree.show()
 tree.insert_item([1], 'testing 123')
 tree.insert_item([1], '123')
 tree.insert_item([1],'hello again')
 tree.insert_item([1,2],' a child')
-tree.rm([1,0])
+tree.show()
+tree.reposition_item([1,0,2],0)
 tree.show()
