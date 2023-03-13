@@ -86,10 +86,15 @@ class ListTree:
             return "NEW RANK OUTSIDE VALID RANGE"
         # re rank all siblings
         self.select(parent_address)[current_rank][0][-1] = new_rank
-        for i in range(new_rank, current_rank):
-            self.select(parent_address)[i][0][-1] += 1
-        
-        print(self.select(parent_address))
+        if new_rank > current_rank:
+            for i in range(current_rank + 1, new_rank + 1):
+                self.select(parent_address)[i][0][-1] -= 1
+        elif new_rank < current_rank:
+            for i in range(new_rank, current_rank):
+                self.select(parent_address)[i][0][-1] += 1
+                
+        print(f'items before sorting = {self.select(parent_address)}')
+        print(f'count children {item_sibling_count}')
         
         self.sort_items(parent_address)
         
@@ -112,6 +117,9 @@ class ListTree:
             for element in item:
                 if isinstance(element, str):
                     # normal case, the parent address has changed, but its length has not changed
+                    if len(item[0]) == len(parent_address) + 1:
+                        'if triggered'
+                    print(f'item[0], parent_address {item[0]},{parent_address}')
                     item[0][0:len(parent_address_recurs)] = parent_address
                     # parent address has increased, 
                     
@@ -148,5 +156,26 @@ tree.insert_item([1], '123')
 tree.insert_item([1],'hello again')
 tree.insert_item([1,2],' a child')
 tree.show()
-tree.reposition_item([1,0,2],0)
+#tree.reposition_item([1,2],0)
 tree.show()
+
+
+
+
+
+
+
+
+
+
+
+""""
+tree.insert_item([1,1,1],'somethign')
+tree.insert_item([1,1,1],'somethign else')
+tree.insert_item([1,1,1],'somethign else again')
+tree.show()
+tree.insert_item([1,1,1,0], 'a')
+tree.insert_item([1,1,1,0,0], 'b')
+tree.insert_item([1,1,1,0,0,0], 'c')
+tree.show()
+"""
