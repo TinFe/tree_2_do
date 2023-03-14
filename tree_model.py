@@ -43,7 +43,7 @@ class ListTree:
         new_item = [new_address, new_item_name, []]
         self.select(parent_address).append(new_item)
     
-    def insert_node(self, node, new_parent_address, new_rank=0):
+    def insert_node(self, node, new_parent_address, new_rank=0): #--------------------------------------------------------------------------------------------------------------
         siblings_count = self.count_children(new_parent_address)
         if new_rank > siblings_count or new_rank < 0:
             return 'INVALID NEW RANK'
@@ -53,7 +53,30 @@ class ListTree:
         node_address.append(temporary_rank)
         node[0] = node_address
         self.select(new_parent_address).append(node)
-        self.relabel_children(node_address)
+        print(f'node {node}')
+        self.relabel_after_insert(node[self.into], node_address)
+        print(f'node address{node_address}')
+        node_address_copy = node_address.copy()
+        self.reposition_item(node_address_copy, new_rank)
+        print(f'node_address {node_address}')
+    
+    def relabel_after_insert(self, child_node, parent_address):
+        print(f'node to relabel {child_node}')
+        print(f'parent address {parent_address}')
+        for element in child_node:
+           
+            if isinstance(element, str):
+                # remove the beginning of the address, leaving only the rank
+                del child_node[0][0:len(child_node[0]) - 1]
+                parent_address_copy = parent_address.copy()
+                # insert the parent address to the beginning of the child address
+                for i in range(len(parent_address_copy)):
+                    child_node[0].insert(0,parent_address_copy.pop())
+                parent_address = child_node[0]
+                print(f'relabeled_node {child_node}')
+                print(f'parent address2{parent_address}')
+            elif isinstance(element, list) and element:
+                self.relabel_after_insert(element, parent_address)
         
     def rm(self, item_path):
         parent_address = item_path.copy()
@@ -92,9 +115,7 @@ class ListTree:
         elif new_rank < current_rank:
             for i in range(new_rank, current_rank):
                 self.select(parent_address)[i][0][-1] += 1
-                
-        print(f'items before sorting = {self.select(parent_address)}')
-        print(f'count children {item_sibling_count}')
+
         
         self.sort_items(parent_address)
         
@@ -113,22 +134,19 @@ class ListTree:
         
     def relabel_children(self, parent_address):
         # relabel a parent's children after its own address has been changed.
-        def relabel_recurs(item, parent_address_recurs):
-            for element in item:
+        def relabel_recurs(node, parent_address_recurs):
+            for element in node:
                 if isinstance(element, str):
                     # normal case, the parent address has changed, but its length has not changed
-                    if len(item[0]) == len(parent_address) + 1:
-                        'if triggered'
-                    print(f'item[0], parent_address {item[0]},{parent_address}')
-                    item[0][0:len(parent_address_recurs)] = parent_address
+                    node[0][0:len(parent_address_recurs)] = parent_address
                     # parent address has increased, 
                     
                     
                 elif isinstance(element, list):
                     relabel_recurs(element, parent_address_recurs)
         
-        item = self.select(parent_address)
-        relabel_recurs(item, parent_address)
+        node = self.select(parent_address)
+        relabel_recurs(node, parent_address)
                      
         
     def show(self):
@@ -149,16 +167,27 @@ tree = ListTree('programming')
 tree.root = root
 tree.insert_item([1,0], 'finish refactor')
 tree.insert_item([1,0,0], 'some shit')
-tree.insert_item([1,0], 'add reorder function')
-tree.insert_item([1,0], 'add detach_and_retach')
 tree.insert_item([1], 'testing 123')
 tree.insert_item([1], '123')
 tree.insert_item([1],'hello again')
 tree.insert_item([1,2],' a child')
 tree.show()
-#tree.reposition_item([1,2],0)
+#tree.reposition_item([1],0)
+node = tree.rm([1,0])
+tree.insert_node(node, [0,0])
+print(node)
 tree.show()
 
+
+
+"""
+node = tree.rm([1,0])
+tree.insert_node(node, [2]) ----- works
+node = tree.rm([1,0])
+tree.insert_node(node, [0])   -----works
+node = tree.rm([1,0])
+tree.insert_node(node, [0,0]) ------doesn't work
+"""
 
 
 
