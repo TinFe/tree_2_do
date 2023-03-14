@@ -1,3 +1,4 @@
+import json
 class ListTree:
     def __init__(self, root_name) -> None:
         self.root_name = root_name
@@ -156,7 +157,7 @@ class ListTree:
 
     # show tree, indenting according to how 'deep' in the tree an item is
     def show(self):
-        print('**'+self.root_name+'**')
+        print('**'+self.root[1]+'**')
         def recursive_print(lst):
             for i in enumerate(lst):
                 if isinstance(i[1], str):
@@ -166,7 +167,16 @@ class ListTree:
                     recursive_print(i[1])
         recursive_print(self.root[self.into])
                     
+    def save(self, filename):
+        filename = filename + '.json'
+        with open(filename, 'w') as f:
+            json.dump(self.root, f)
+    
+    def load(self, filename):
+        with open(filename, 'r') as f:
+            self.root = json.load(f)
+            self.show()            
 
 
-
+tree = ListTree('')
 
