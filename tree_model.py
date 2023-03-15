@@ -9,6 +9,7 @@ class ListTree:
         for i in enumerate(self.root):
             if i[1] == []:
                 self.into = i[0]
+        self.tree_string = ''
     # `address` is used to access items in the nested list. an address of [1,2,3] will be used in the manner of tree.root[1][2][3]
     # converts address used by user to code readable path   
     def create_path(self, address):
@@ -166,7 +167,19 @@ class ListTree:
                 elif isinstance(i[1], list):
                     recursive_print(i[1])
         recursive_print(self.root[self.into])
-                    
+    
+    def tree_to_str(self):
+        self.tree_string = '**'+self.root[1]+'**'
+        def write_to_string(lst):
+            for i in enumerate(lst):
+                if isinstance(i[1], str):
+                    indent = ' ' * 4 * len(lst[i[0] - 1])
+                    self.tree_string += '\n' + indent + '•' + i[1] + f"____{lst[i[0]-1]}"
+                elif isinstance(i[1], list):
+                    write_to_string(i[1])
+        write_to_string(self.root[self.into])
+        return self.tree_string
+    
     def save(self, filename):
         filename = filename + '.json'
         with open(filename, 'w') as f:
@@ -179,4 +192,5 @@ class ListTree:
 
 
 tree = ListTree('')
+tree.load('test.json')
 
