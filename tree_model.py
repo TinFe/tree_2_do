@@ -174,7 +174,7 @@ class ListTree:
             for i in enumerate(lst):
                 if isinstance(i[1], str):
                     indent = ' ' * 4 * len(lst[i[0] - 1])
-                    self.tree_string += '\n' + indent + '•' + i[1] + f"____{lst[i[0]-1]}"
+                    self.tree_string += '\n' + indent + '•' + i[1]
                 elif isinstance(i[1], list):
                     write_to_string(i[1])
         write_to_string(self.root[self.into])
@@ -188,9 +188,9 @@ class ListTree:
     def load(self, filename):
         with open(filename, 'r') as f:
             self.root = json.load(f)
-            self.show()            
+                       
 
 
 tree = ListTree('')
 tree.load('test.json')
-
+s = tree.tree_to_str()
