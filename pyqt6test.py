@@ -13,7 +13,8 @@ class MainWindow(qtw.QMainWindow):
         main_widget.setLayout(qtw.QVBoxLayout())
         self.setCentralWidget(main_widget)
         
-        test_label = qtw.QLabel(s)
+        self.list_widget = qtw.QListWidget()
+        self.list_widget.setAlternatingRowColors(True)
         main_widget.layout().addWidget(test_label)
 
 

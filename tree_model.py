@@ -9,7 +9,7 @@ class ListTree:
         for i in enumerate(self.root):
             if i[1] == []:
                 self.into = i[0]
-        self.tree_string = ''
+        self.tree_list = []
     # `address` is used to access items in the nested list. an address of [1,2,3] will be used in the manner of tree.root[1][2][3]
     # converts address used by user to code readable path   
     def create_path(self, address):
@@ -147,9 +147,7 @@ class ListTree:
             for element in node:
                 if isinstance(element, str):
                     node[0][0:len(parent_address_recurs)] = parent_address
-                    # parent address has increased, 
-                    
-                    
+                    # parent address has increased,                     
                 elif isinstance(element, list):
                     relabel_recurs(element, parent_address_recurs)
         
@@ -167,18 +165,21 @@ class ListTree:
                 elif isinstance(i[1], list):
                     recursive_print(i[1])
         recursive_print(self.root[self.into])
-    
-    def tree_to_str(self):
-        self.tree_string = '**'+self.root[1]+'**'
-        def write_to_string(lst):
+        
+    # add every item in the tree, one by one, in order, to self.tree_list
+    def make_tree_list(self):
+        tree_list_header = {'item_text':'**'+self.root[1]+'**'}
+        self.tree_list.append(tree_list_header)
+        def recursive_append(lst):
             for i in enumerate(lst):
                 if isinstance(i[1], str):
                     indent = ' ' * 4 * len(lst[i[0] - 1])
-                    self.tree_string += '\n' + indent + '•' + i[1]
+                    item = {'item_text':indent + '•' + i[1], 'item_address':lst[i[0] - 1]}
+                    self.tree_list.append(item)
                 elif isinstance(i[1], list):
-                    write_to_string(i[1])
-        write_to_string(self.root[self.into])
-        return self.tree_string
+                    recursive_append(i[1])
+        recursive_append(self.root[self.into])
+        return self.tree_list
     
     def save(self, filename):
         filename = filename + '.json'
@@ -193,4 +194,4 @@ class ListTree:
 
 tree = ListTree('')
 tree.load('test.json')
-s = tree.tree_to_str()
+l = tree.make_tree_list()
