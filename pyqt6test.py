@@ -2,7 +2,7 @@ import sys
 from PyQt6 import QtWidgets as qtw
 from PyQt6 import QtGui as qtg
 from PyQt6 import QtCore as qtc
-from tree_model import ListTree, s
+from tree_model import ListTree, l
 
 # create a MainWindow class
 class MainWindow(qtw.QMainWindow):
@@ -15,7 +15,16 @@ class MainWindow(qtw.QMainWindow):
         
         self.list_widget = qtw.QListWidget()
         self.list_widget.setAlternatingRowColors(True)
-        main_widget.layout().addWidget(test_label)
+        
+        # add items from tree_model to list_widget
+        for item in l:
+            list_item = qtw.QListWidgetItem()
+            list_item.setText(item['item_text'])
+            self.list_widget.addItem(list_item)
+        
+        main_widget.layout().addWidget(self.list_widget)
+        
+        
 
 
         
