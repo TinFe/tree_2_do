@@ -42,6 +42,16 @@ class ListTree:
         else:
             return len(self.select(parent_address))
     
+    def get_item(self, node_address):
+        parent_address = node_address.copy()
+        parent_address.pop()
+        item_index = node_address[-1]
+        return self.select(parent_address)[item_index]
+        
+    def rename_item(self, node_address, new_name):
+        item = self.get_item(node_address)
+        item[1] = new_name
+    
     # insert a new item into a chosen parent node. parent node is selected by address    
     def insert_item(self, parent_address, new_item_name):
         # count children of parent node you are inserting into to give the new item a new address
@@ -168,12 +178,13 @@ class ListTree:
         
     # add every item in the tree, one by one, in order, to self.tree_list
     def make_tree_list(self):
-        tree_list_header = {'item_text':'**'+self.root[1]+'**'}
+        self.tree_list = []
+        tree_list_header = {'item_text':'**'+self.root[1]+'**','item_address':'root'}
         self.tree_list.append(tree_list_header)
         def recursive_append(lst):
             for i in enumerate(lst):
                 if isinstance(i[1], str):
-                    indent = ' ' * 4 * len(lst[i[0] - 1])
+                    indent = ' ' * 8 * len(lst[i[0] - 1])
                     item = {'item_text':indent + '•' + i[1], 'item_address':lst[i[0] - 1]}
                     self.tree_list.append(item)
                 elif isinstance(i[1], list):
