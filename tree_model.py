@@ -62,7 +62,6 @@ class ListTree:
         # create new item
         new_item = [new_address, new_item_name, []]
         self.select(parent_address).append(new_item)
-        print(f'new address {new_address}')
         new_address_copy = new_address.copy() 
         self.reposition_item(new_address_copy, 0)
     

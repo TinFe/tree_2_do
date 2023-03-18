@@ -16,6 +16,7 @@ class MainWindow(qtw.QMainWindow):
         self.control_panel = qtw.QWidget()
         self.control_panel.setLayout(qtw.QHBoxLayout())
         self.insert_item_button = qtw.QPushButton('+')
+        self.insert_item_button.clicked.connect(self.insert_item)
         self.control_panel.layout().addWidget(self.insert_item_button)
         
         self.tree_object = ListTree('_')
@@ -66,8 +67,28 @@ class MainWindow(qtw.QMainWindow):
             self.tree_object.rename_item(item_address, new_text)
             self.tree_object.make_tree_list()
             self.populate_list_widget()
-            
-
+    
+    def insert_item(self):
+        if not self.list_widget.selectedItems():
+            return 'nothing selected'
+        parent_item = self.list_widget.currentItem()
+        parent_address = parent_item.data(100)
+        current_row = self.list_widget.currentRow()
+        if parent_address == 'root':
+            parent_address = []
+        new_item_address = parent_address.copy()
+        new_item_address.append(0)
+        new_item = qtw.QListWidgetItem()
+        new_item.setData(100, qtc.QVariant(new_item_address))
+        # add new row and select the item
+        self.list_widget.insertItem(current_row + 1, new_item)
+        
+        # insert item into tree_object
+        self.tree_object.insert_item(parent_address, '_')
+        self.tree_object.make_tree_list()
+        new_item.setSelected(True)
+        self.on_item_double_click(new_item)
+        
 if __name__ == '__main__':
     app = qtw.QApplication(sys.argv)
     mw = MainWindow()
