@@ -18,20 +18,32 @@ class MainWindow(qtw.QMainWindow):
         self.control_panel.setLayout(qtw.QHBoxLayout())
         self.insert_item_button = qtw.QPushButton('+')
         self.reposition_item_button = qtw.QPushButton('Reposition')
-        self.insert_item_button.clicked.connect(self.insert_item)
+        self.reparent_node_button = qtw.QPushButton('Reparent')
+        self.insert_item_button.clicked.connect(self.insert_item)  
+        self.reparent_node_button.clicked.connect(self.reparent_node)
         self.control_panel.layout().addWidget(self.insert_item_button)
         self.control_panel.layout().addWidget(self.reposition_item_button)
+        self.control_panel.layout().addWidget(self.reparent_node_button)
         
         # reposition variables
         self.reposition_item_button_mode = "initial_press"
         self.reposition_item_new_rank = None
         
+        # reparent variables
+        self.reparent_node_button_mode = 'initial_press'
+        self.reparent_node_address = None
+        
+        # tree model
         self.tree_object = ListTree('_')
         self.tree_object.load('test.json')
         self.tree_object.make_tree_list()
         
+        # list widget
         self.list_widget = qtw.QListWidget()
         self.list_widget.setAlternatingRowColors(True)
+        self.list_widget_font = qtg.QFont()
+        self.list_widget_font.setPointSize(18)
+        self.list_widget.setFont(self.list_widget_font)
         self.list_widget.setDragEnabled(True)
         
         self.list_widget.itemClicked.connect(self.on_item_click)
@@ -122,8 +134,8 @@ class MainWindow(qtw.QMainWindow):
         if self.reposition_item_button_mode == 'initial_press':
             item = self.list_widget.currentItem()
             item_address = item.data(100)
-            if item == 'root' or item == []:
-                return 'cannot reposition root'
+            if item_address == 'root' or item == []:
+                return print('cannot reposition root')
             self.reposition_item_address = item_address
             self.reposition_item_button_mode = 'final_press'
             
@@ -139,6 +151,27 @@ class MainWindow(qtw.QMainWindow):
             self.populate_list_widget()
             self.reposition_item_button_mode = 'initial_press'
             self.reposition_item_address = None
+            
+    def reparent_node(self):
+        if self.reparent_node_button_mode == 'initial_press':
+            item = self.list_widget.currentItem()
+            item_address = item.data(100)
+            if item == 'root' or item == []:
+                return print('cannot reparent root')
+            self.reparent_node_address = item_address
+            self.reparent_node_button_mode = 'final_press'
+            
+        
+        elif self.reparent_node_button_mode == 'final_press':
+            item = self.list_widget.currentItem()
+            new_parent_address = item.data(100)
+            if new_parent_address == 'root':
+                new_parent_address = []
+            self.tree_object.reparent(self.reparent_node_address, new_parent_address)
+            self.tree_object.make_tree_list()
+            self.populate_list_widget()
+            self.reparent_node_button_mode = 'initial_press'
+            self.reparent_node_address = None
         
         
 if __name__ == '__main__':
