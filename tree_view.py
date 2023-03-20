@@ -25,6 +25,29 @@ class MainWindow(qtw.QMainWindow):
         self.control_panel.layout().addWidget(self.reposition_item_button)
         self.control_panel.layout().addWidget(self.reparent_node_button)
         
+        # menu bar 
+        menu_bar = self.menuBar()
+        file_menu = menu_bar.addMenu('File')
+        new_action = qtg.QAction('New', self)
+        open_action = qtg.QAction('Open', self)
+        save_action = qtg.QAction('Save', self)
+        save_as_action = qtg.QAction('Save As...', self)
+        # keyboard shortcuts
+        save_action.setShortcut(qtg.QKeySequence.StandardKey.Save)
+        file_menu.addAction(new_action)
+        file_menu.addAction(open_action)
+        file_menu.addAction(save_action)
+        file_menu.addAction(save_as_action)
+        
+        
+        
+
+        
+        save_action.triggered.connect(self.save)
+        
+        
+        
+        
         # reposition variables
         self.reposition_item_button_mode = "initial_press"
         self.reposition_item_new_rank = None
@@ -34,8 +57,9 @@ class MainWindow(qtw.QMainWindow):
         self.reparent_node_address = None
         
         # tree model
+        self.tree_file_str = 'test.json'
         self.tree_object = ListTree('_')
-        self.tree_object.load('test.json')
+        self.tree_object.load(self.tree_file_str)
         self.tree_object.make_tree_list()
         
         # list widget
@@ -172,6 +196,9 @@ class MainWindow(qtw.QMainWindow):
             self.populate_list_widget()
             self.reparent_node_button_mode = 'initial_press'
             self.reparent_node_address = None
+            
+    def save(self):
+        self.tree_object.save(self.tree_file_str)
         
         
 if __name__ == '__main__':

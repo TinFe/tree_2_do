@@ -195,7 +195,6 @@ class ListTree:
         return self.tree_list
     
     def save(self, filename):
-        filename = filename + '.json'
         with open(filename, 'w') as f:
             json.dump(self.root, f)
     
