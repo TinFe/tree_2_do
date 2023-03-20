@@ -13,11 +13,18 @@ class MainWindow(qtw.QMainWindow):
         main_widget.setLayout(qtw.QVBoxLayout())
         self.setCentralWidget(main_widget)
         
+        # control panel buttons
         self.control_panel = qtw.QWidget()
         self.control_panel.setLayout(qtw.QHBoxLayout())
         self.insert_item_button = qtw.QPushButton('+')
+        self.reposition_item_button = qtw.QPushButton('Reposition')
         self.insert_item_button.clicked.connect(self.insert_item)
         self.control_panel.layout().addWidget(self.insert_item_button)
+        self.control_panel.layout().addWidget(self.reposition_item_button)
+        
+        # reposition variables
+        self.reposition_item_button_mode = "initial_press"
+        self.reposition_item_new_rank = None
         
         self.tree_object = ListTree('_')
         self.tree_object.load('test.json')
@@ -25,10 +32,14 @@ class MainWindow(qtw.QMainWindow):
         
         self.list_widget = qtw.QListWidget()
         self.list_widget.setAlternatingRowColors(True)
-        self.list_widget.itemClicked.connect(self.on_item_click)
         self.list_widget.setDragEnabled(True)
+        
+        self.list_widget.itemClicked.connect(self.on_item_click)
+        self.backspace = qtg.QShortcut(qtg.QKeySequence(qtc.Qt.Key.Key_Backspace), self)
+        self.backspace.activated.connect(self.remove_node)
         self.list_widget.itemDoubleClicked.connect(self.on_item_double_click)
         self.list_widget.itemChanged.connect(self.finish_editing_item)
+        self.reposition_item_button.clicked.connect(self.reposition_item)
         
         main_widget.layout().addWidget(self.control_panel)
         main_widget.layout().addWidget(self.list_widget)
@@ -88,6 +99,47 @@ class MainWindow(qtw.QMainWindow):
         self.tree_object.make_tree_list()
         new_item.setSelected(True)
         self.on_item_double_click(new_item)
+        
+    def remove_node(self):
+        if self.list_widget.selectedItems() == []:
+            return print('nothing selected')      
+        item = self.list_widget.currentItem()
+        item_address = item.data(100)
+        if item == 'root' or item == []:
+            # removing root node not yet available
+            return 'coming soon'
+        # rm node
+        self.tree_object.rm(item_address)
+        self.tree_object.make_tree_list()
+        self.populate_list_widget()
+    
+    def reposition_item(self):
+        print(self.reposition_item_button_mode)
+        if self.list_widget.selectedItems() == []:
+            return print('nothing selected')  
+               
+        # check if initial button press
+        if self.reposition_item_button_mode == 'initial_press':
+            item = self.list_widget.currentItem()
+            item_address = item.data(100)
+            if item == 'root' or item == []:
+                return 'cannot reposition root'
+            self.reposition_item_address = item_address
+            self.reposition_item_button_mode = 'final_press'
+            
+        
+        elif self.reposition_item_button_mode == 'final_press':
+            item = self.list_widget.currentItem()
+            item_address = item.data(100)
+            rank = item_address[-1]
+            if item == 'root' or item == []:
+                return print('cannot reposition root')
+            self.tree_object.reposition_item(self.reposition_item_address, rank)
+            self.tree_object.make_tree_list()
+            self.populate_list_widget()
+            self.reposition_item_button_mode = 'initial_press'
+            self.reposition_item_address = None
+        
         
 if __name__ == '__main__':
     app = qtw.QApplication(sys.argv)
