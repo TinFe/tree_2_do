@@ -34,6 +34,8 @@ class MainWindow(qtw.QMainWindow):
         save_as_action = qtg.QAction('Save As...', self)
         # keyboard shortcuts
         save_action.setShortcut(qtg.QKeySequence.StandardKey.Save)
+        open_action.setShortcut(qtg.QKeySequence.StandardKey.Open)
+        
         file_menu.addAction(new_action)
         file_menu.addAction(open_action)
         file_menu.addAction(save_action)
@@ -42,7 +44,7 @@ class MainWindow(qtw.QMainWindow):
         
         
 
-        
+        open_action.triggered.connect(self.load)
         save_action.triggered.connect(self.save)
         
         
@@ -200,6 +202,11 @@ class MainWindow(qtw.QMainWindow):
     def save(self):
         self.tree_object.save(self.tree_file_str)
         
+    def load(self):
+        filename, _ = qtw.QFileDialog.getOpenFileName()
+        self.tree_object.load(filename)
+        self.tree_object.make_tree_list()
+        self.populate_list_widget()        
         
 if __name__ == '__main__':
     app = qtw.QApplication(sys.argv)
