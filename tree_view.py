@@ -1,4 +1,5 @@
 import sys
+import os
 from PyQt6 import QtWidgets as qtw
 from PyQt6 import QtGui as qtg
 from PyQt6 import QtCore as qtc
@@ -40,7 +41,7 @@ class MainWindow(qtw.QMainWindow):
         file_menu.addAction(open_action)
         file_menu.addAction(save_action)
         file_menu.addAction(save_as_action)
-        
+        new_action.triggered.connect(self.new)
         open_action.triggered.connect(self.load)
         save_action.triggered.connect(self.save)
         save_as_action.triggered.connect(self.save_as)
@@ -194,6 +195,14 @@ class MainWindow(qtw.QMainWindow):
             self.populate_list_widget()
             self.reparent_node_button_mode = 'initial_press'
             self.reparent_node_address = None
+    
+    def new(self):
+        file_path, _ = qtw.QFileDialog.getSaveFileName()
+        file_name = os.path.basename(file_path)
+        self.tree_object = ListTree(file_name)
+        self.tree_object.make_tree_list()
+        self.populate_list_widget()
+        
             
     def save(self):
         self.tree_object.save(self.tree_file_str)
