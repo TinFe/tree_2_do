@@ -204,6 +204,4 @@ class ListTree:
                        
 
 
-tree = ListTree('')
-tree.load('test.json')
-l = tree.make_tree_list()
+

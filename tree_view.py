@@ -2,7 +2,7 @@ import sys
 from PyQt6 import QtWidgets as qtw
 from PyQt6 import QtGui as qtg
 from PyQt6 import QtCore as qtc
-from tree_model import ListTree, l
+from tree_model import ListTree
 
 # create a MainWindow class
 class MainWindow(qtw.QMainWindow):
@@ -41,12 +41,9 @@ class MainWindow(qtw.QMainWindow):
         file_menu.addAction(save_action)
         file_menu.addAction(save_as_action)
         
-        
-        
-
         open_action.triggered.connect(self.load)
         save_action.triggered.connect(self.save)
-        
+        save_as_action.triggered.connect(self.save_as)
         
         
         
@@ -59,7 +56,7 @@ class MainWindow(qtw.QMainWindow):
         self.reparent_node_address = None
         
         # tree model
-        self.tree_file_str = 'test.json'
+        self.tree_file_str, _ = qtw.QFileDialog.getOpenFileName()
         self.tree_object = ListTree('_')
         self.tree_object.load(self.tree_file_str)
         self.tree_object.make_tree_list()
@@ -186,7 +183,6 @@ class MainWindow(qtw.QMainWindow):
                 return print('cannot reparent root')
             self.reparent_node_address = item_address
             self.reparent_node_button_mode = 'final_press'
-            
         
         elif self.reparent_node_button_mode == 'final_press':
             item = self.list_widget.currentItem()
@@ -201,6 +197,10 @@ class MainWindow(qtw.QMainWindow):
             
     def save(self):
         self.tree_object.save(self.tree_file_str)
+        
+    def save_as(self):
+        filename, _ = qtw.QFileDialog.getSaveFileName()
+        self.tree_object.save(filename)
         
     def load(self):
         filename, _ = qtw.QFileDialog.getOpenFileName()
