@@ -163,7 +163,6 @@ class MainWindow(qtw.QMainWindow):
             self.reposition_item_address = item_address
             self.reposition_item_button_mode = 'final_press'
             
-        
         elif self.reposition_item_button_mode == 'final_press':
             item = self.list_widget.currentItem()
             item_address = item.data(100)
