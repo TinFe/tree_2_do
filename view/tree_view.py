@@ -33,7 +33,8 @@ class MainWindow(qtw.QMainWindow):
         open_action = qtg.QAction('Open', self)
         save_action = qtg.QAction('Save', self)
         save_as_action = qtg.QAction('Save As...', self)
-        # keyboard shortcuts
+        
+        # menu bar keyboard shortcuts
         save_action.setShortcut(qtg.QKeySequence.StandardKey.Save)
         open_action.setShortcut(qtg.QKeySequence.StandardKey.Open)
         
@@ -46,7 +47,11 @@ class MainWindow(qtw.QMainWindow):
         save_action.triggered.connect(self.save)
         save_as_action.triggered.connect(self.save_as)
         
-        
+        # tree model
+        self.tree_file_str, _ = qtw.QFileDialog.getOpenFileName()
+        self.tree_object = ListTree('_')
+        self.tree_object.load(self.tree_file_str)
+        self.tree_object.make_tree_list()
         
         # reposition variables
         self.reposition_item_button_mode = "initial_press"
@@ -55,12 +60,6 @@ class MainWindow(qtw.QMainWindow):
         # reparent variables
         self.reparent_node_button_mode = 'initial_press'
         self.reparent_node_address = None
-        
-        # tree model
-        self.tree_file_str, _ = qtw.QFileDialog.getOpenFileName()
-        self.tree_object = ListTree('_')
-        self.tree_object.load(self.tree_file_str)
-        self.tree_object.make_tree_list()
         
         # list widget
         self.list_widget = qtw.QListWidget()
@@ -87,7 +86,7 @@ class MainWindow(qtw.QMainWindow):
     def populate_list_widget(self):
         if self.list_widget.count() != 0:
             self.list_widget.clear()
-    # add items from tree_model to list_widget
+    # add items from tree_model.tree_list to list_widget
         for item in self.tree_object.tree_list:
             list_item = qtw.QListWidgetItem()
             item_text = item['item_text']
@@ -103,18 +102,19 @@ class MainWindow(qtw.QMainWindow):
         self.list_widget.itemChanged.disconnect(self.finish_editing_item)
         item.setFlags(item.flags() | qtc.Qt.ItemFlag.ItemIsEditable)
         self.list_widget.editItem(item)
-        
         self.list_widget.itemChanged.connect(self.finish_editing_item)
 
+    # edit an existing node or insert a new node into the tree
     def finish_editing_item(self, item):
         item_address = item.data(100)
         new_text = item.text()
-        old_text = self.tree_object.select_node(item_address)[1]
+        old_text = self.tree_object.select_node(item_address)[self.tree_object.index_node_name]
         if new_text != old_text:
             self.tree_object.rename_node(item_address, new_text)
             self.tree_object.make_tree_list()
             self.populate_list_widget()
     
+    # ====== Modify Tree ====== #
     def new_node(self):
         if not self.list_widget.selectedItems():
             return 'nothing selected'
@@ -195,14 +195,14 @@ class MainWindow(qtw.QMainWindow):
             self.populate_list_widget()
             self.reparent_node_button_mode = 'initial_press'
             self.reparent_node_address = None
-    
+            
+    # ====== Menu Bar Slots ====== # 
     def new(self):
         file_path, _ = qtw.QFileDialog.getSaveFileName()
         file_name = os.path.basename(file_path)
         self.tree_object = ListTree(file_name)
         self.tree_object.make_tree_list()
-        self.populate_list_widget()
-        
+        self.populate_list_widget()     
             
     def save(self):
         self.tree_object.save(self.tree_file_str)
