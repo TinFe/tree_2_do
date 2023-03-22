@@ -3,7 +3,7 @@ import os
 from PyQt6 import QtWidgets as qtw
 from PyQt6 import QtGui as qtg
 from PyQt6 import QtCore as qtc
-from tree_model import ListTree
+from model.tree_model import ListTree
 
 # create a MainWindow class
 class MainWindow(qtw.QMainWindow):
@@ -17,12 +17,12 @@ class MainWindow(qtw.QMainWindow):
         # control panel buttons
         self.control_panel = qtw.QWidget()
         self.control_panel.setLayout(qtw.QHBoxLayout())
-        self.insert_item_button = qtw.QPushButton('+')
+        self.new_node_button = qtw.QPushButton('+')
         self.reposition_item_button = qtw.QPushButton('Reposition')
         self.reparent_node_button = qtw.QPushButton('Reparent')
-        self.insert_item_button.clicked.connect(self.insert_item)  
+        self.new_node_button.clicked.connect(self.new_node)  
         self.reparent_node_button.clicked.connect(self.reparent_node)
-        self.control_panel.layout().addWidget(self.insert_item_button)
+        self.control_panel.layout().addWidget(self.new_node_button)
         self.control_panel.layout().addWidget(self.reposition_item_button)
         self.control_panel.layout().addWidget(self.reparent_node_button)
         
@@ -109,13 +109,13 @@ class MainWindow(qtw.QMainWindow):
     def finish_editing_item(self, item):
         item_address = item.data(100)
         new_text = item.text()
-        old_text = self.tree_object.get_item(item_address)[1]
+        old_text = self.tree_object.select_node(item_address)[1]
         if new_text != old_text:
-            self.tree_object.rename_item(item_address, new_text)
+            self.tree_object.rename_node(item_address, new_text)
             self.tree_object.make_tree_list()
             self.populate_list_widget()
     
-    def insert_item(self):
+    def new_node(self):
         if not self.list_widget.selectedItems():
             return 'nothing selected'
         parent_item = self.list_widget.currentItem()
@@ -131,7 +131,7 @@ class MainWindow(qtw.QMainWindow):
         self.list_widget.insertItem(current_row + 1, new_item)
         
         # insert item into tree_object
-        self.tree_object.insert_item(parent_address, '_')
+        self.tree_object.new_node(parent_address, '_')
         self.tree_object.make_tree_list()
         new_item.setSelected(True)
         self.on_item_double_click(new_item)
