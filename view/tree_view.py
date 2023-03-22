@@ -194,7 +194,7 @@ class MainWindow(qtw.QMainWindow):
             self.populate_list_widget()
             self.reparent_node_button_mode = 'initial_press'
             self.reparent_node_address = None
-            
+         
     # ====== Menu Bar Slots ====== # 
     def new(self):
         file_path, _ = qtw.QFileDialog.getSaveFileName()

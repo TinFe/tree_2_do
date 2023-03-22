@@ -93,6 +93,13 @@ class ListTree:
         
 # ====== Modify ====== #
     def reparent(self, node_address, new_parent_address):
+        # Errors
+        # try to reparent a node to itself
+        if node_address == new_parent_address:
+            return print('CANNOT REPARENT A NODE TO ITSELF')
+        # try to reparent a node to one of its own children
+        if new_parent_address[0:len(new_parent_address) - 1] == node_address and len(new_parent_address) > len(node_address):
+             return print('CANNOT REPARENT A NODE TO ONE OF ITS OWN CHILDREN')
         node = self.rm(node_address)
         self.insert_node(node, new_parent_address)
         
@@ -215,3 +222,5 @@ class ListTree:
     def load(self, filename):
         with open(filename, 'r') as f:
             self.root = json.load(f)
+            
+            
