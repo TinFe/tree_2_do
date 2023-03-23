@@ -8,3 +8,5 @@ Untitled1.ipynb
 __pycache__/example_list.cpython-311.pyc
 __pycache__/tree_model.cpython-311.pyc
 .DS_Store
+model/__pycache__/
+view/__pycache__/

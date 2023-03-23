@@ -10,7 +10,7 @@ class ListTree:
         # list of nodes used later for displaying the tree
         self.tree_list = []
 
-# ====== Selecting Nodes ====== #
+# ============ Selecting Nodes ============ #
     # `address` is used to access items in the nested list. an address of [1,2,3] will be used in the manner of tree.root[1][2][3]
     # convert address into path than can actually be used to select the node   
     def create_path_to_children(self, address):
@@ -44,7 +44,7 @@ class ListTree:
         item_index = node_address[-1]
         return self.select_children(parent_address)[item_index]
 
-# ====== Organize/Analyze ======#
+# ============ Organize/Analyze ============#
     # count children of a given parent, needed for correct addressing and ordering
     def count_children(self, parent_address):
         if parent_address == 'root':
@@ -91,7 +91,8 @@ class ListTree:
             elif isinstance(element, list) and element:
                 self.readdress_children_after_insert(element, parent_address)
         
-# ====== Modify ====== #
+# ============ Modify ============ #
+    # reparent a node by removing it from the tree and inserting it into another node
     def reparent(self, node_address, new_parent_address):
         # Errors
         # try to reparent a node to itself
@@ -100,6 +101,9 @@ class ListTree:
         # try to reparent a node to one of its own children
         if new_parent_address[0:len(new_parent_address) - 1] == node_address and len(new_parent_address) > len(node_address):
              return print('CANNOT REPARENT A NODE TO ONE OF ITS OWN CHILDREN')
+        # check if removing the node to be inserted will change the index of the parent node
+        if new_parent_address[0:len(node_address) - 1] == node_address[0:len(node_address) - 1] and node_address[-1] < new_parent_address[len(node_address) - 1]:
+            new_parent_address[len(node_address) - 1] -= 1
         node = self.rm(node_address)
         self.insert_node(node, new_parent_address)
         
@@ -186,7 +190,7 @@ class ListTree:
         # reorder node to desired position (0 by default)
         self.reposition_item(node_address_copy, new_rank)
             
-# ====== Save, Load and Display ====== # 
+# ============ Save, Load and Display ============ # 
     # show tree, including each node's address indenting according to how 'deep' in the tree an item is
     def show(self):
         print('**'+self.root[1]+'**')
