@@ -90,7 +90,7 @@ class MainWindow(qtw.QMainWindow):
         for item in self.tree_object.tree_list:
             list_item = qtw.QListWidgetItem()
             item_text = item['item_text']
-            item_address = item['item_address']
+            item_address = item['item_address']  
             list_item.setText(item_text)
             list_item.setData(100, qtc.QVariant(item_address))
             self.list_widget.addItem(list_item)
